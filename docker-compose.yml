@@ -1,0 +1,34 @@
+networks:
+  default:
+    name: traefik-network
+
+services:
+  traefik:
+    image: traefik:v3.1
+#    container_name: "traefik"
+    restart: "always"
+
+#    ports:
+#      - "80:80"
+#      - "443:443"
+    # Allow other services on other networks work correctly (avoid Gateway timeout error)
+    network_mode: "host"
+
+    env_file:
+      - secret/traefik.env
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./acme.json:/acme.json
+    labels:
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=default"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.otasovo.cz`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=auth"
+      # allow acces to traefik dashboard when no port is defined
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+      # https://doc.traefik.io/traefik/middlewares/http/basicauth/
+      - "traefik.http.middlewares.auth.basicauth.users=otas:$$2y$$05$$FMQGLljFrdUmFWnBVH3NuOFRBwF3iYJiJ3XY0fwezlGPCT.r9d5Yq"

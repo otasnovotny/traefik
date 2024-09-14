@@ -1,0 +1,39 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+
+    # (Optional) Redirect to HTTPS
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+
+#  matrix:
+#    address: ":8448"
+
+providers:
+  docker: {}
+
+api:
+  insecure: false
+  dashboard: true
+
+#log:
+#  level:
+#    debug
+
+certificatesResolvers:
+  default:
+    acme:
+      email: otas.novotny@gmail.com
+      storage: acme.json
+      dnsChallenge:
+        provider: route53
