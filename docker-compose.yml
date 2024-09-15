@@ -1,18 +1,15 @@
 networks:
-  default:
+  host:
     name: traefik-network
+    external: true
 
 services:
   traefik:
     image: traefik:v3.1
-#    container_name: "traefik"
     restart: "always"
 
-#    ports:
-#      - "80:80"
-#      - "443:443"
-    # Allow other services on other networks work correctly (avoid Gateway timeout error)
-    network_mode: "host"
+    networks:
+      - host
 
     env_file:
       - secret/traefik.env
