@@ -14,7 +14,7 @@ services:
     network_mode: "host"
 
     env_file:
-      - ./secret/traefik.env
+      - ./.env
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -24,10 +24,10 @@ services:
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certresolver=default"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.otasovo.cz`)"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.middlewares=auth"
       # allow acces to traefik dashboard when no port is defined
       - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
       # https://doc.traefik.io/traefik/middlewares/http/basicauth/
-      - "traefik.http.middlewares.auth.basicauth.users=otas:$$2y$$05$$FMQGLljFrdUmFWnBVH3NuOFRBwF3iYJiJ3XY0fwezlGPCT.r9d5Yq"
+      - "traefik.http.middlewares.auth.basicauth.users=${ADMIN_USERNAME}:${ADMIN_HASHED_PASSWORD}"
