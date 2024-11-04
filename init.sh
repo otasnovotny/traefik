@@ -13,7 +13,7 @@ docker network create traefik-network
 # generate traefik user/hashed-password
 echo $(htpasswd -nbB USER "PASS") | sed -e s/\\$/\\$\\$/g
 
-# create .env - and sev values!
+# create .env - and set values!
 cp .env.example .env
 
 docker compose up -d
